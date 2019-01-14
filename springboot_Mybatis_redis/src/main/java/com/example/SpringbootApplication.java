@@ -8,7 +8,7 @@ import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
 @MapperScan("com.example.dao")
-@ComponentScan(basePackages="com.example.holder,com.example.config")
+@ComponentScan(basePackages="com.example.holder,com.example.config,com.example.controller,com.example.service")
 @EnableCaching
 public class SpringbootApplication {
 
