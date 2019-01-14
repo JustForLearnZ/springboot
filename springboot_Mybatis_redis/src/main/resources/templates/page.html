@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Insert title here</title>
+    <script type="text/javascript" src="/jquery-3.1.1.min.js">
+    </script>
+    <script type="text/javascript">
+        var pageNum = 1;
+        var pageSize = 3;
+        var pages = 0;
+        $(document).ready(function () {
+            loadData(pageNum, pageSize);
+
+        });
+
+        function drop(event) {
+            if (event.keyCode == 13) {
+
+                pageNum = $("#txt").val();
+                loadData(pageNum, pageSize)
+            }
+        }
+
+        function firstPage() {
+            pageNum = 1;
+            loadData(pageNum, pageSize);
+        }
+
+        function nextPage() {
+            pageNum = pageNum + 1;
+            loadData(pageNum, pageSize);
+        }
+
+        function lastPage() {
+            pageNum = pages;
+            loadData(pageNum, pageSize);
+        }
+
+        function prePage() {
+            pageNum = pageNum - 1;
+            loadData(pageNum, pageSize);
+        }
+
+        function loadData(pageNum, pageSize) {
+
+            $.ajax({
+                url: "/user/all",
+                type: "get",
+                data: {pageNum: pageNum, pageSize: pageSize},
+                success: function (data) {
+
+                    var users = data.list;
+                    var html = "";
+                    for (var i in users) {
+                        html = html + "<tr>" +
+                            "<td>" + users[i].userName + "</td>" +
+                            "<td>" + users[i].password + "</td>" +
+                            "<td>" + users[i].phone + "</td>" + "</tr>";
+                    }
+                    $("#TableData").html(html);
+
+                    pages = data.pages;
+                    $("#pages").html(pages);
+                    pageNum = data.pageNum;
+                    /* 		var num=""+pageNum;
+                            document.getElementById("nums").value(num); */
+
+                    var result = "当前是第" + data.pageNum + "页,总计" + data.pages + "页，总计数据" + data.total + "条";
+                    $("#page").html(result);
+                    var t = document.getElementById("txt");
+                    t.value = "" + data.pageNum;
+
+                }
+            });
+        }
+    </script>
+
+</head>
+<body>
+
+<div style="width:100px; height:100px">
+    <table border="1" style="border-width: 1px;border-style: dashed;">
+
+        <tr>
+            <th>UserName</th>
+            <th>PassWord</th>
+            <th>Phone</th>
+        </tr>
+        <!-- <tr th:each="user:${users}">
+            <td th:text="${user.userName}"></td>
+            <td th:text="${user.password}"></td>
+            <td th:text="${user.phone}"></td>
+        </tr>
+     -->
+        <tbody id="TableData"></tbody>
+
+    </table>
+
+</div>
+<br>
+<div>
+    <span><button onclick="firstPage()">首页</button></span>
+    <span><button onclick="prePage()">上一页</button></span>
+    <span><button onclick="nextPage()">下一页</button></span>
+    <span><input id="txt" type="text" size="3" onkeyup="drop(event)"/> /<span id="pages"></span></span>
+    <span><button onclick="lastPage()">末页</button></span>
+    <br/>
+    <span id="page"></span>
+</div>
+
+</body>
+</html>
